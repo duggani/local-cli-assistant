@@ -5,6 +5,7 @@ Main terminal application for the local CLI assistant.
 from __future__ import annotations
 
 import argparse
+from spinner import Spinner
 
 from config import DEFAULT_MODELS
 from prompts import CHAT_SYSTEM_PROMPT, CODE_SYSTEM_PROMPT, TOOLS_SYSTEM_PROMPT
@@ -66,6 +67,9 @@ def main() -> None:
 
         messages.append({"role": "user", "content": user_input})
 
+        spinner = Spinner("Thinking")
+        spinner.start()
+
         try:
             response = chat(model=model, messages=messages)
             assistant_message = response["message"]["content"].strip()
@@ -74,6 +78,8 @@ def main() -> None:
             messages.pop()
             continue
 
+        spinner.stop()
+        print()
         print(f"\nAssistant> {assistant_message}\n")
         messages.append({"role": "assistant", "content": assistant_message})
 
